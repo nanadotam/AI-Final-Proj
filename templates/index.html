@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cocoa Price Prediction</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/theme.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #000 !important;
+            padding: 1rem 2rem;
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+        }
+        .hero-section {
+            text-align: center;
+            padding: 5rem 2rem;
+            background-color: #000;
+            color: #fff;
+        }
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        .form-section {
+            background-color: #fff;
+            color: #000;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: -5rem;
+            position: relative;
+            z-index: 10;
+        }
+        .form-control {
+            background-color: #f8f9fa;
+            color: #495057;
+            border: 1px solid #ced4da;
+        }
+        .form-control:focus {
+            background-color: #fff;
+            color: #495057;
+            border: 1px solid #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .footer {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        @media (max-width: 768px) {
+            .navbar-nav {
+                flex-direction: column;
+            }
+            .hero-section {
+                padding: 3rem 1rem;
+            }
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Cocoa Price Prediction</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1>AI Cocoa Price Prediction</h1>
+            <p>Predict future cocoa prices using advanced AI models. Get insights into market trends and make informed decisions.</p>
+        </div>
+    </section>
+
+    <div class="container form-section" id="form-section">
+        <form id="ai-form" action="/predict" method="POST">
+            <div class="mb-3">
+                <label for="forecast" class="form-label">Forecast Period (days)</label>
+                <input type="number" class="form-control" id="forecast" name="forecast" placeholder="Enter days to forecast">
+            </div>
+            <div class="mb-3">
+                <label for="start-date" class="form-label">Start Date for 7-day Period</label>
+                <input type="date" class="form-control" id="start-date" name="start_date">
+            </div>
+            <div class="mb-3">
+                <label for="month" class="form-label">Select Month</label>
+                <input type="month" class="form-control" id="month" name="month">
+            </div>
+            <div class="mb-3">
+                <label for="window-size" class="form-label">Window Size for Analysis</label>
+                <input type="number" class="form-control" id="window-size" name="window_size" placeholder="Enter window size">
+            </div>
+            <div class="mb-3">
+                <label for="past-start-date" class="form-label">Past Start Date</label>
+                <input type="date" class="form-control" id="past-start-date" name="past_start_date">
+            </div>
+            <div class="mb-3">
+                <label for="past-end-date" class="form-label">Past End Date</label>
+                <input type="date" class="form-control" id="past-end-date" name="past_end_date">
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="forecast-30" name="forecast_30">
+                <label for="forecast-30" class="form-check-label">Forecast Next 30 Days</label>
+            </div>
+            <div class="mb-3">
+                <label for="specific-period" class="form-label">Specific Period Analysis</label>
+                <input type="date" class="form-control" id="specific-period" name="specific_period_start">
+                <input type="number" class="form-control mt-2" id="specific-period-days" name="specific_period_days" placeholder="Days to analyze">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Cocoa Price Prediction. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+
+</html>
