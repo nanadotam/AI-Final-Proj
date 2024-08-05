@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,79 +77,75 @@
         }
     </style>
 </head>
-
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="index.html">Cocoa Price Prediction</a>
+            <a class="navbar-brand" href="#">Cocoa Price Prediction</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">About</a>
+                        <a class="nav-link" href="#about">About</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <section class="hero-section">
+    <section class="hero-section text-center text-white">
         <div class="container">
-            <h1>AI Cocoa Price Prediction</h1>
-            <p>Predict future cocoa prices using advanced AI models. Get insights into market trends and make informed decisions.</p>
+            <h1>Cocoa Price Prediction</h1>
+            <p>Current Price: ${{ current_price }}</p>
+            <form action="/predict" method="post">
+                <button type="submit" class="btn btn-warning my-3">Predict for the next 30 days</button>
+            </form>
+            <button id="historical-btn" class="btn btn-info my-3">View Previous Prices</button>
+            <div id="historical-form" style="display:none;" class="form-section">
+                <form id="historical-price-form">
+                    <div class="mb-3">
+                        <label for="start-date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="start-date" name="start_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end-date" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="end-date" name="end_date" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div id="historical-graph" style="display:none;">
+                <h2>Historical Prices</h2>
+                <div id="plotly-historical-graph"></div>
+            </div>
         </div>
     </section>
 
-    <div class="container form-section" id="form-section">
-        <form id="ai-form" action="/predict" method="POST">
-            <div class="mb-3">
-                <label for="forecast" class="form-label">Forecast Period (days)</label>
-                <input type="number" class="form-control" id="forecast" name="forecast" placeholder="Enter days to forecast">
-            </div>
-            <div class="mb-3">
-                <label for="start-date" class="form-label">Start Date for 7-day Period</label>
-                <input type="date" class="form-control" id="start-date" name="start_date">
-            </div>
-            <div class="mb-3">
-                <label for="month" class="form-label">Select Month</label>
-                <input type="month" class="form-control" id="month" name="month">
-            </div>
-            <div class="mb-3">
-                <label for="window-size" class="form-label">Window Size for Analysis</label>
-                <input type="number" class="form-control" id="window-size" name="window_size" placeholder="Enter window size">
-            </div>
-            <div class="mb-3">
-                <label for="past-start-date" class="form-label">Past Start Date</label>
-                <input type="date" class="form-control" id="past-start-date" name="past_start_date">
-            </div>
-            <div class="mb-3">
-                <label for="past-end-date" class="form-label">Past End Date</label>
-                <input type="date" class="form-control" id="past-end-date" name="past_end_date">
-            </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="forecast-30" name="forecast_30">
-                <label for="forecast-30" class="form-check-label">Forecast Next 30 Days</label>
-            </div>
-            <div class="mb-3">
-                <label for="specific-period" class="form-label">Specific Period Analysis</label>
-                <input type="date" class="form-control" id="specific-period" name="specific_period_start">
-                <input type="number" class="form-control mt-2" id="specific-period-days" name="specific_period_days" placeholder="Days to analyze">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
-
-    <footer class="footer">
+    <footer class="footer text-center text-white py-3">
         <p>&copy; 2024 Cocoa Price Prediction. All Rights Reserved.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init();
+        document.getElementById('historical-btn').addEventListener('click', function() {
+            const form = document.getElementById('historical-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('historical-price-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/historical', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('plotly-historical-graph').innerHTML = data.plot_html;
+                document.getElementById('historical-graph').style.display = 'block';
+            });
+        });
     </script>
 </body>
-
 </html>

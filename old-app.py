@@ -12,9 +12,6 @@ app = Flask(__name__)
 model = load_model('models/cocoa_price_lstm_model.keras', compile=False)
 scaler = joblib.load('models/scaler.pkl')
 
-# Ensure the feature names match
-feature_columns = ['ICCO daily price (US$/tonne)', 'MA_7', 'MA_30', 'MA_90', 'Price_Diff', 'Volatility_7', 'Volatility_30', 'Volatility_90']
-
 # Function to forecast future values
 def forecast_future_values(model, data, time_steps, forecast_period):
     predictions = []
@@ -41,13 +38,8 @@ dash_app.layout = html.Div([
 @app.route('/')
 def index():
     df = pd.read_csv('data/preprocessed_ICCO_daily_prices.csv')
-    # Convert 'Date' column to datetime type
-    df['Date'] = pd.to_datetime(df['Date'])
-    # Sort the dataframe by date in descending order
-    df = df.sort_values(by='Date', ascending=False)
-    # Select the latest price
-    latest_price = df.iloc[0]['New York futures (US$/tonne)']
-    return render_template('index.html', current_price=latest_price)
+    current_price = df.iloc[-1]['New York futures (US$/tonne)']
+    return render_template('index.html', current_price=current_price)
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -79,13 +71,18 @@ def historical():
 def update_graph(pathname):
     if pathname == '/dashboard/':
         df = pd.read_csv('data/preprocessed_ICCO_daily_prices.csv')
-        feature_columns = ['ICCO daily price (US$/tonne)', 'MA_7', 'MA_30', 'MA_90', 'Price_Diff', 'Volatility_7', 'Volatility_30', 'Volatility_90']
-        data_scaled = scaler.transform(df[feature_columns])
+        
+        # Ensure we use the correct feature set for scaling
+        feature_columns = ['ICCO daily price (US$/tonne)']
+        data = df[feature_columns].values
+        
+        # Scale the data using the scaler fitted with the correct features
+        data_scaled = scaler.transform(data)
+
         time_steps = 100
         forecast_days = 30
         predictions = forecast_future_values(model, data_scaled, time_steps, forecast_days)
-        latest_date = pd.to_datetime(df['Date']).max()  # Correctly get the latest date
-        dates = pd.date_range(start=latest_date, periods=forecast_days + 1).tolist()[1:]
+        dates = pd.date_range(start=df['Date'].iloc[-1], periods=forecast_days + 1).tolist()[1:]
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=dates, y=predictions, mode='lines+markers'))
@@ -93,7 +90,6 @@ def update_graph(pathname):
 
         return fig
     return go.Figure()
-
 
 if __name__ == '__main__':
     app.run(debug=True)
