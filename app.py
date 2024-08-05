@@ -87,7 +87,7 @@ def update_graph(pathname):
         
         # Inverse transform the predictions
         predictions = scaler.inverse_transform(np.concatenate([predictions.reshape(-1, 1), 
-                                                               np.zeros((forecast_days, len(feature_columns) - 1))], axis=1))[:, 0]
+                                                                np.zeros((forecast_days, len(feature_columns) - 1))], axis=1))[:, 0]
 
         latest_date = pd.to_datetime(df['Date']).max()  # Correctly get the latest date
         dates = pd.date_range(start=latest_date, periods=forecast_days + 1).tolist()[1:]
