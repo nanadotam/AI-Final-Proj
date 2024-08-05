@@ -84,16 +84,24 @@ def update_graph(pathname):
         time_steps = 100
         forecast_days = 30
         predictions = forecast_future_values(model, data_scaled, time_steps, forecast_days)
+        
+        # Inverse transform the predictions
+        predictions = scaler.inverse_transform(np.concatenate([predictions.reshape(-1, 1), 
+                                                               np.zeros((forecast_days, len(feature_columns) - 1))], axis=1))[:, 0]
+
         latest_date = pd.to_datetime(df['Date']).max()  # Correctly get the latest date
         dates = pd.date_range(start=latest_date, periods=forecast_days + 1).tolist()[1:]
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=dates, y=predictions, mode='lines+markers'))
-        fig.update_layout(title='Cocoa Price Prediction for Next 30 Days', xaxis_title='Date', yaxis_title='Price (US$/tonne)')
+        fig.update_layout(
+            title='Cocoa Price Prediction for Next 30 Days', 
+            xaxis_title='Date', 
+            yaxis_title='Price (US$/tonne)'
+        )
 
         return fig
     return go.Figure()
-
 
 if __name__ == '__main__':
     app.run(debug=True)
